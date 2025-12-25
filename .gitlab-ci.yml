@@ -36,8 +36,8 @@ deploy_homelab:
 
     # 2. Construction et Lancement
     # --remove-orphans nettoie les vieux conteneurs
-    # - docker compose build --no-cache 
-    - docker compose up -d --build --remove-orphans
+    - docker compose build --no-cache 
+    - docker compose up -d --remove-orphans
     
     # 3. Opérations Post-Démarrage (Spécifique Django)
     
