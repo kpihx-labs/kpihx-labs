@@ -56,10 +56,13 @@ deploy_homelab:
     
     # On utilise Docker (qui est root) pour redonner la propriété des fichiers au Runner.
     # $(id -u):$(id -g) récupère l'ID de l'utilisateur actuel (gitlab-runner).
-    - echo "🔧 Rétablissement des droits sur les fichiers..."
-    - docker run --rm -v "$(pwd):/work" alpine chown -R $(id -u):$(id -g) /work
+    # - echo "🔧 Rétablissement des droits sur les fichiers..."
+    # - docker run --rm -v "$(pwd):/work" alpine chown -R $(id -u):$(id -g) /work
 
-    - echo "✅ Site en ligne et dossier propre !"
+    # - echo "✅ Site en ligne et dossier propre !"
+  after_script:
+    - echo "🔧 Nettoyage et correction des permissions (Toujours exécuté)..."
+    - docker run --rm -v "$PWD:/work" alpine chown -R $(id -u):$(id -g) /work
 
 # --- JOB 2 : MIROIR VERS GITHUB ---
 sync_github:
