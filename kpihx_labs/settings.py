@@ -103,3 +103,6 @@ MEDIA_ROOT = BASE_DIR / 'media'
 MARKDOWNX_MEDIA_PATH = datetime.now().strftime('markdownx/%Y/%m/%d')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Optimisation et gestion des fichiers statiques en Prod
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
