@@ -3,6 +3,8 @@ FROM python:3.11-slim
 # Variables d'environnement pour Python
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
+ENV DISABLE_DB=True
+
 # Proxy de l'X (pour le build)
 # ARG http_proxy
 # ARG https_proxy
@@ -21,7 +23,6 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
-COPY .env .env
 
 # Collecte des fichiers statiques 
 RUN python manage.py collectstatic --noinput

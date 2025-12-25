@@ -125,3 +125,7 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+if os.environ.get("DISABLE_DB", "False") == "True":
+    DATABASES = {}
+
