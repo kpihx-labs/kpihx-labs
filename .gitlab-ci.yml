@@ -45,12 +45,6 @@ deploy_homelab:
     - echo "📦 Application des migrations..."
     - docker compose exec -T web python manage.py migrate --noinput
     
-    # B. FICHIERS STATIQUES (CSS/JS)
-    # Gunicorn ne sert pas les fichiers statiques par défaut, Whitenoise le fait,
-    # mais il faut quand même les collecter.
-    - echo "🎨 Collecte des fichiers statiques..."
-    - docker compose exec -T web python manage.py collectstatic --noinput
-    
     # 4. Nettoyage des images Docker inutilisées (Gain de place)
     - docker image prune -f
     
