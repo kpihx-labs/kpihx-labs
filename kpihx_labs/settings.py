@@ -106,3 +106,22 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Optimisation et gestion des fichiers statiques en Prod
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+
+# --- CONFIGURATION PRODUCTION & PROXY ---
+
+# 1. Faire confiance aux headers du Proxy (Traefik/Cloudflare)
+# Cela dit à Django : "Si le header X-Forwarded-Proto dit https, alors considère que c'est sécurisé"
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# 2. Gestion des Headers Host
+USE_X_FORWARDED_HOST = True
+USE_X_FORWARDED_PORT = True
+
+# 3. Autoriser l'origine pour les formulaires (CSRF)
+# Indispensable pour se logger dans l'admin via le domaine public
+CSRF_TRUSTED_ORIGINS = [
+    'https://kpihx-labs.com', 
+    'https://www.kpihx-labs.com', 
+    'https://portal.homelab'
+]
