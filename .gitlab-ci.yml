@@ -70,14 +70,14 @@ sync_github:
   only:
     - main
   script:
-    - echo "🔄 Synchronisation vers GitHub..."
-    
-    # Création du repo s'il n'existe pas (API Github)
+    - echo "🔍 Vérification/Création du repo sur GitHub..."
     - |
       curl -H "Authorization: token ${GITHUB_TOKEN}" \
            -X POST \
            -d "{\"name\":\"${REPO_NAME}\", \"private\":false}" \
            https://api.github.com/orgs/${GITHUB_ORG}/repos || true
+    
+    - echo "🔄 Synchronisation..."
     
     # Push du code
     - git remote add github https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_ORG}/${REPO_NAME}.git || git remote set-url github https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_ORG}/${REPO_NAME}.git
