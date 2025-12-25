@@ -1,0 +1,79 @@
+stages:
+  - deploy
+  - sync
+
+variables:
+  # Optimisation Docker pour éviter les logs infinis
+  DOCKER_DRIVER: overlay2
+
+# --- JOB 1 : DÉPLOIEMENT SUR LE SERVEUR ---
+deploy_homelab:
+  stage: deploy
+  tags:
+    - homelab   # Cible ton runner sur le serveur
+  only:
+    - main
+  script:
+    - echo "🚀 Démarrage du déploiement Django..."
+    
+    # 1. Génération du fichier .env pour la PROD
+    # On injecte les secrets définis dans GitLab (Settings > CI/CD > Variables)
+    - echo "DEBUG=False" > .env
+    - echo "SECRET_KEY=$SECRET_KEY" >> .env
+    # En prod, on autorise l'IP locale, le domaine public et le domaine local
+    - echo "ALLOWED_HOSTS=localhost,127.0.0.1,kpihxlabs.com,portal.homelab,web" >> .env
+    
+    # Config Database
+    - echo "DB_NAME=kpihx_db" >> .env
+    - echo "DB_USER=admin" >> .env
+    - echo "DB_PASS=$DB_PASS" >> .env
+    - echo "DB_HOST=postgres" >> .env
+    - echo "DB_PORT=5432" >> .env
+    
+    # Config Proxy (Vital pour le build à l'X)
+    # - echo "http_proxy=$PROXY_URL" >> .env
+    # - echo "https_proxy=$PROXY_URL" >> .env
+
+    # 2. Construction et Lancement
+    # --remove-orphans nettoie les vieux conteneurs
+    - docker compose up -d --build --remove-orphans
+    
+    # 3. Opérations Post-Démarrage (Spécifique Django)
+    
+    # A. MIGRATIONS BDD
+    # On demande au conteneur 'web' de mettre à jour la base de données
+    - echo "📦 Application des migrations..."
+    - docker compose exec -T web python manage.py migrate --noinput
+    
+    # B. FICHIERS STATIQUES (CSS/JS)
+    # Gunicorn ne sert pas les fichiers statiques par défaut, Whitenoise le fait,
+    # mais il faut quand même les collecter.
+    - echo "🎨 Collecte des fichiers statiques..."
+    - docker compose exec -T web python manage.py collectstatic --noinput
+    
+    # 4. Nettoyage des images Docker inutilisées (Gain de place)
+    - docker image prune -f
+    
+    - echo "✅ Site en ligne !"
+
+# --- JOB 2 : MIROIR VERS GITHUB ---
+sync_github:
+  stage: sync
+  variables:
+    GITHUB_ORG: "KpihX-Lab"
+    REPO_NAME: "kpihx-labs"
+  only:
+    - main
+  script:
+    - echo "🔄 Synchronisation vers GitHub..."
+    
+    # Création du repo s'il n'existe pas (API Github)
+    - |
+      curl -H "Authorization: token ${GITHUB_TOKEN}" \
+           -X POST \
+           -d "{\"name\":\"${REPO_NAME}\", \"private\":false}" \
+           https://api.github.com/orgs/${GITHUB_ORG}/repos || true
+    
+    # Push du code
+    - git remote add github https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_ORG}/${REPO_NAME}.git || git remote set-url github https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_ORG}/${REPO_NAME}.git
+    - git push github $CI_COMMIT_SHA:refs/heads/main --force
