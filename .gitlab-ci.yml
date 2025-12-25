@@ -21,7 +21,7 @@ deploy_homelab:
     - echo "DEBUG=False" > .env
     - echo "SECRET_KEY=$SECRET_KEY" >> .env
     # En prod, on autorise l'IP locale, le domaine public et le domaine local
-    - echo "ALLOWED_HOSTS=localhost,127.0.0.1,kpihxlabs.com,portal.homelab,web" >> .env
+    - echo "ALLOWED_HOSTS=localhost,127.0.0.1,kpihx-labs.com,www.kpihx-labs.com,portal.homelab,web" >> .env
     
     # Config Database
     - echo "DB_NAME=kpihx_db" >> .env

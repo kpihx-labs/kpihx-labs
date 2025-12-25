@@ -22,6 +22,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
+RUN mkdir -p /app/staticfiles
 # Collecte des fichiers statiques (CSS/JS) pour la prod
 # RUN python manage.py collectstatic --noinput 
 # (On le fera souvent au lancement ou dans le script d'entrypoint)

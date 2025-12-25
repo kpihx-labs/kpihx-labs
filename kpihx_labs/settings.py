@@ -5,18 +5,20 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-default-key')
+# --- CORE SETTINGS -------------------------------------------------------------
 
-# SECURITY WARNING: don't run with debug turned on in production!
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-default-key')
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
+ALLOWED_HOSTS = [
+    h.strip() for h in os.environ.get('ALLOWED_HOSTS', '').split(',')
+    if h.strip()
+]
 
-# Application definition
+# --- APPLICATIONS --------------------------------------------------------------
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -24,20 +26,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
-    # Third party apps
-    'markdownx',  # Pour tes tutos
-    
-    # Local Apps (Tes modules)
+
+    'markdownx',
+
     'apps.core',
     'apps.knowledge',
-    # 'apps.workspaces', # On l'activera quand on fera le Goal 2
-    # 'apps.neural', # On l'activera quand on fera le Goal 3
 ]
+
+# --- MIDDLEWARE ----------------------------------------------------------------
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware', # Pour servir les fichiers statiques en prod
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -48,10 +49,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'kpihx_labs.urls'
 
+# --- TEMPLATES -----------------------------------------------------------------
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'], # Dossier global de templates
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -66,8 +69,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'kpihx_labs.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+# --- DATABASE ------------------------------------------------------------------
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -79,7 +82,8 @@ DATABASES = {
     }
 }
 
-# Password validation
+# --- PASSWORDS -----------------------------------------------------------------
+
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -87,44 +91,37 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# Internationalization
+# --- INTERNATIONALIZATION -------------------------------------------------------
+
 LANGUAGE_CODE = 'fr-fr'
 TIME_ZONE = 'Europe/Paris'
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
+# --- STATIC & MEDIA ------------------------------------------------------------
+
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-# Media files (Uploads)
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Markdownx config
+# --- MARKDOWNX -----------------------------------------------------------------
+
 MARKDOWNX_MEDIA_PATH = datetime.now().strftime('markdownx/%Y/%m/%d')
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# --- PROXY / HTTPS / CLOUDFLARE ------------------------------------------------
 
-# Optimisation et gestion des fichiers statiques en Prod
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
-
-# --- CONFIGURATION PRODUCTION & PROXY ---
-
-# 1. Faire confiance aux headers du Proxy (Traefik/Cloudflare)
-# Cela dit à Django : "Si le header X-Forwarded-Proto dit https, alors considère que c'est sécurisé"
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
-# 2. Gestion des Headers Host
 USE_X_FORWARDED_HOST = True
 USE_X_FORWARDED_PORT = True
 
-# 3. Autoriser l'origine pour les formulaires (CSRF)
-# Indispensable pour se logger dans l'admin via le domaine public
 CSRF_TRUSTED_ORIGINS = [
-    'https://kpihx-labs.com', 
-    'https://www.kpihx-labs.com', 
-    'https://portal.homelab'
+    'https://kpihx-labs.com',
+    'https://www.kpihx-labs.com',
+    'https://portal.homelab',
 ]
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
