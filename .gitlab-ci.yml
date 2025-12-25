@@ -54,8 +54,13 @@ deploy_homelab:
     # 4. Nettoyage des images Docker inutilisées (Gain de place)
     - docker image prune -f
     
-    - echo "✅ Site en ligne !"
+    # On utilise Docker (qui est root) pour redonner la propriété des fichiers au Runner.
+    # $(id -u):$(id -g) récupère l'ID de l'utilisateur actuel (gitlab-runner).
+    - echo "🔧 Rétablissement des droits sur les fichiers..."
+    - docker run --rm -v "$PWD:/work" alpine chown -R $(id -u):$(id -g) /work
 
+    - echo "✅ Site en ligne et dossier propre !"
+    
 # --- JOB 2 : MIROIR VERS GITHUB ---
 sync_github:
   stage: sync
