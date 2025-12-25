@@ -43,8 +43,8 @@ deploy_homelab:
     
     # A. MIGRATIONS BDD
     # On demande au conteneur 'web' de mettre à jour la base de données
-    - echo "📦 Application des migrations..."
-    - docker compose exec -T web python manage.py migrate --noinput
+    # - echo "📦 Application des migrations..."
+    # - docker compose exec -T web python manage.py migrate --noinput
     
     # 4. Nettoyage des images Docker inutilisées (Gain de place)
     - docker image prune -f

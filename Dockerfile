@@ -21,7 +21,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
-# COPY .env .env
+COPY .env .env
 
 # Collecte des fichiers statiques 
 RUN python manage.py collectstatic --noinput
