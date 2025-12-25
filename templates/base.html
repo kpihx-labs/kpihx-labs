@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}KpihX Labs{% endblock %}</title>
+    <!-- Tailwind CSS (Via CDN pour l'instant, simple et rapide) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        kpihx: {
+                            dark: '#0a0a0a',
+                            light: '#1a1a1a',
+                            accent: '#3b82f6', // Bleu électrique
+                            secondary: '#8b5cf6' // Violet
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0a0a0a; color: #e5e7eb; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen font-sans">
+
+    <!-- Navigation -->
+    <nav class="border-b border-gray-800 bg-kpihx-dark/80 backdrop-blur fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-violet-500">
+                        KpihX Labs
+                    </span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="/" class="hover:text-white px-3 py-2 rounded-md text-sm font-medium text-gray-300">Accueil</a>
+                        <a href="/admin" class="hover:text-white px-3 py-2 rounded-md text-sm font-medium text-gray-300">Admin</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenu Principal -->
+    <main class="flex-grow pt-20">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800 mt-12 py-8 bg-kpihx-light">
+        <div class="text-center text-gray-500 text-sm">
+            &copy; 2025 KpihX Labs. Built for excellence.
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,33 @@
+services:
+  # Base de données locale pour le dev
+  db:
+    image: postgres:16-alpine
+    container_name: local_postgres_dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+    networks:
+      - proxy
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - local_pg_data:/var/lib/postgresql/data
+
+  # Surcharge du service Web
+  web:
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=db
+    depends_on:
+      - db
+
+# En local, on crée le réseau nous-mêmes
+networks:
+  proxy:
+    external: false
+
+volumes:
+  local_pg_data:

@@ -1,0 +1,36 @@
+services:
+  web:
+    build:
+      context: .
+      # args:
+        # http_proxy: http://129.104.201.11:8080
+        # https_proxy: http://129.104.201.11:8080
+    container_name: kpihx-portal
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - .:/app                  # Pour le dev (modifs en direct)
+      - static_volume:/app/static
+      - media_volume:/app/media
+    networks:
+      - proxy
+    
+    # Configuration Traefik (Public et Privé)
+    labels:
+      - "traefik.enable=true"
+      # URL Publique (Cloudflare) + URL Interne (VPN)
+      - "traefik.http.routers.portal.rule=Host(`kpihx-labs.com`) || Host(`www.kpihx-labs.com`) || Host(`portal.homelab`)"
+      - "traefik.http.routers.portal.entrypoints=websecure"
+      - "traefik.http.routers.portal.tls=true"
+      # Pas de middleware Auth ici, c'est un site public !
+
+  # On utilise la BDD existante (Postgres de la stack database)
+  # Il faudra juste créer une nouvelle database 'portal_db' dedans via Adminer
+
+volumes:
+  static_volume:
+  media_volume:
+
+networks:
+  proxy:
+    external: true

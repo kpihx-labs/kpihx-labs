@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+
+# Environnement & Secrets (CRITIQUE)
+.env
+.venv
+env/
+venv/
+
+# Docker
+docker-compose.override.yml
+
+# IDE
+.vscode/
+.idea/
+
+# Base de données locale (si sqlite utilisé temporairement)
+db.sqlite3
+
+# Médias uploadés (on ne versionne pas les images des utilisateurs)
+media/
+
+# On ignore la config active locale
+docker-compose.override.yml

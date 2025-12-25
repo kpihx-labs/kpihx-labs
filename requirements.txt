@@ -1,0 +1,7 @@
+Django>=5.0
+psycopg2-binary     # Pour parler à ta BDD Postgres
+gunicorn            # Serveur de production
+python-dotenv       # Gestion des secrets
+django-markdownx    # Pour écrire tes tutos en Markdown avec preview
+Pillow              # Gestion des images
+whitenoise          # Gestion des fichiers statiques
