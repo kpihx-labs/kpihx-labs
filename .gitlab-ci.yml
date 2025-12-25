@@ -65,7 +65,7 @@ deploy_homelab:
 sync_github:
   stage: sync
   variables:
-    GITHUB_ORG: "KpihX-Lab"
+    GITHUB_ORG: "kpihx-labs"
     REPO_NAME: "kpihx-labs"
   only:
     - main
